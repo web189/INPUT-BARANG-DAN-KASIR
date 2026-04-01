@@ -532,7 +532,7 @@ html, body {
   border: 1px solid var(--card-border);
   border-radius: var(--radius);
   padding: 0;
-  overflow: hidden;
+  overflow: visible; /* jangan hidden agar tabel bisa di-scroll horizontal */
 }
 
 .card-header {
@@ -563,13 +563,28 @@ html, body {
    =========================== */
 .table-wrapper {
   overflow-x: auto;
+  overflow-y: visible;
   padding: 4px 0;
+  -webkit-overflow-scrolling: touch; /* smooth scroll di iOS */
+  width: 100%;
+}
+
+/* Indikator bisa digeser di HP */
+.table-wrapper::after {
+  content: '';
+  display: block;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 600px;
+  min-width: 780px; /* pastikan tabel lebih lebar dari layar HP */
+}
+
+/* Penting: card yang membungkus tabel JANGAN overflow:hidden */
+.card.table-card,
+.card:has(.table-wrapper) {
+  overflow: visible;
 }
 
 th {
@@ -1369,6 +1384,60 @@ button {
   .main-content {
     margin-left: 0;
     padding: 72px 14px 14px;
+    overflow-x: hidden; /* cegah scroll body horizontal */
+  }
+
+  /* Section jangan clip konten tabel */
+  .section {
+    overflow: visible;
+  }
+
+  /* Card: tidak boleh overflow hidden agar tabel bisa scroll */
+  .card {
+    overflow: visible;
+  }
+
+  /* Table wrapper: scroll horizontal dengan touch */
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    /* scroll indicator hint */
+    position: relative;
+  }
+
+  /* Hint teks geser */
+  .table-wrapper::before {
+    content: '\2190  geser tabel  \2192';
+    display: block;
+    text-align: center;
+    font-size: 10px;
+    color: var(--text-muted);
+    padding: 4px 0 2px;
+    opacity: 0.65;
+    letter-spacing: 0.5px;
+  }
+
+  /* Tabel ukuran tetap sehingga bisa digeser */
+  table {
+    min-width: 700px;
+  }
+
+  th {
+    font-size: 10px;
+    padding: 8px 10px;
+    white-space: nowrap;
+  }
+
+  td {
+    font-size: 11px;
+    padding: 8px 10px;
+    white-space: nowrap;
+  }
+
+  /* Kolom nama barang boleh wrap */
+  td:nth-child(3) {
+    white-space: normal;
+    min-width: 90px;
   }
 
   .kasir-layout {
