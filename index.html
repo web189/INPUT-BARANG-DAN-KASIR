@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CV.ASA MANDIRI</title>
+<meta name="description" content="ASA MANDIRI - Sistem Manajemen Warung Grosir Modern">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="favicon.png">
+</head>
+<body>
+
+<!-- LOGIN OVERLAY -->
+<div id="loginOverlay" class="login-overlay">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-icon">🏪</div>
+      <h2>CV.ASA MANDIRI</h2>
+      <p>Sistem Manajemen Toko Berbasis Website Database Realtime</p>
+	  
+    </div>
+    <div class="login-form">
+      <div class="input-group">
+        <i class="fa-solid fa-envelope"></i>
+        <input id="email" type="email" placeholder="Email">
+      </div>
+      <div class="input-group">
+        <i class="fa-solid fa-lock"></i>
+        <input id="password" type="password" placeholder="Password">
+      </div>
+      <button class="btn-login" onclick="login()">
+        <span>Masuk</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+      <button class="btn-tamu" onclick="loginSebagaiTamu()">
+        <i class="fa-solid fa-eye"></i> Lihat sebagai Tamu
+      </button>
+    </div>
+    <div class="login-hint">
+      <small>Admin: admin@asa.com | Kasir: kasir@asa.com</small>
+	  <div> </div>
+	  <small><a href="https://www.instagram.com/benyoriki/" target="_blank" class="ig-link">
+        <i class="fa-brands fa-instagram"></i> @benyoriki
+      </a></small>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="appWrapper" class="app-wrapper hidden">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">🏪</div>
+      <div class="brand-text">
+        <span class="brand-name">ASA MANDIRI</span>
+        <span class="brand-sub">Grosir Modern</span>
+		<small><a href="https://www.instagram.com/benyoriki/" target="_blank" class="ig-link">
+        <i class=" "></i> @benyoriki
+      </a></small>
+      </div>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar" id="userAvatar">T</div>
+      <div class="user-info">
+        <span class="user-name" id="userName">Tamu</span>
+        <span class="user-badge" id="userBadge">TAMU</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <!-- TAMU & SEMUA -->
+      <a class="nav-item active" href="#" onclick="showSection('dashboard')">
+        <i class="fa-solid fa-chart-line"></i><span>Dashboard</span>
+      </a>
+      <a class="nav-item" href="#" onclick="showSection('inventaris')">
+        <i class="fa-solid fa-boxes-stacked"></i><span>Inventaris</span>
+      </a>
+
+      <!-- ADMIN ONLY -->
+      <div class="nav-group admin-only hidden">
+        <div class="nav-group-label">ADMIN</div>
+        <a class="nav-item" href="#" onclick="showSection('inputBarang')">
+          <i class="fa-solid fa-plus-circle"></i><span>Input Barang</span>
+        </a>
+        <a class="nav-item" href="#" onclick="showSection('histori')">
+          <i class="fa-solid fa-clock-rotate-left"></i><span>Histori</span>
+        </a>
+      </div>
+
+      <!-- KASIR ONLY -->
+      <div class="nav-group kasir-only hidden">
+        <div class="nav-group-label">KASIR</div>
+        <a class="nav-item" href="#" onclick="showSection('kasir')">
+          <i class="fa-solid fa-cash-register"></i><span>Kasir & Checkout</span>
+        </a>
+        <a class="nav-item" href="#" onclick="showSection('manajemenKas')">
+          <i class="fa-solid fa-wallet"></i><span>Manajemen Kas</span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div id="jamSidebar" class="sidebar-clock"></div>
+      <button class="btn-logout" onclick="logout()">
+        <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MOBILE TOPBAR -->
+  <div class="mobile-topbar">
+    <button class="hamburger" onclick="toggleSidebar()">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+    <span class="mobile-title">ASA MANDIRI</span>
+    <div class="mobile-badge" id="mobileBadge">TAMU</div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content" id="mainContent">
+
+    <!-- === DASHBOARD === -->
+    <section id="sec-dashboard" class="section active">
+      <div class="page-header">
+        <h2>Dashboard</h2>
+        <span id="jamHeader" class="jam-display"></span>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card green">
+          <div class="stat-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">Total Penjualan</span>
+            <span class="stat-value" id="statPenjualan">Rp. 0</span>
+          </div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-icon"><i class="fa-solid fa-chart-pie"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">Total Laba</span>
+            <span class="stat-value" id="statLaba">Rp. 0</span>
+          </div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-icon"><i class="fa-solid fa-vault"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">Saldo Kas</span>
+            <span class="stat-value" id="statKas">Rp. 0</span>
+          </div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-icon"><i class="fa-solid fa-box"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">Total Produk</span>
+            <span class="stat-value" id="statProduk">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Low Stock -->
+      <div class="card mt-16">
+        <div class="card-header">
+          <h3><i class="fa-solid fa-triangle-exclamation"></i> Stok Hampir Habis</h3>
+        </div>
+        <div id="lowStockList" class="low-stock-list">
+          <p class="empty-state">Semua stok aman ✅</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- === INVENTARIS === -->
+    <section id="sec-inventaris" class="section">
+      <div class="page-header">
+        <h2>Inventaris Barang</h2>
+        <div class="search-bar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="search" placeholder="Cari barang..." oninput="renderInventaris()">
+        </div>
+      </div>
+      <div class="card">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Kode</th>
+                <th>Nama Barang</th>
+                <th>Harga Beli</th>
+                <th>Harga Jual</th>
+                <th>Masuk</th>
+                <th>Terjual</th>
+                <th>Sisa</th>
+                <th>Total Penjualan</th>
+                <th>Laba</th>
+                <th>Status</th>
+                <th class="admin-only hidden">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="dataTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- === INPUT BARANG (ADMIN) === -->
+    <section id="sec-inputBarang" class="section admin-only hidden">
+      <div class="page-header">
+        <h2>Input Barang</h2>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h3 id="formTitle"><i class="fa-solid fa-plus"></i> Tambah Barang Baru</h3>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Kode Barang</label>
+            <input id="kode" placeholder="Contoh: BRG-001">
+          </div>
+          <div class="form-group">
+            <label>Nama Barang</label>
+            <input id="nama" placeholder="Nama produk">
+          </div>
+          <div class="form-group">
+            <label>Harga Beli (Modal)</label>
+            <input id="modal" type="number" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label>Harga Jual</label>
+            <input id="harga" type="number" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label>Qty Masuk</label>
+            <input id="qty" type="number" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label>Kategori</label>
+            <input id="kategori" placeholder="Minuman, Makanan, dll">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-primary" id="btnTambah">
+            <i class="fa-solid fa-floppy-disk"></i> Simpan Barang
+          </button>
+          <button class="btn-secondary" onclick="clearForm()">
+            <i class="fa-solid fa-xmark"></i> Batal
+          </button>
+        </div>
+      </div>
+
+      <!-- Daftar Barang Admin -->
+      <div class="card mt-16">
+        <div class="card-header">
+          <h3><i class="fa-solid fa-list"></i> Daftar Barang</h3>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Kode</th>
+                <th>Nama</th>
+                <th>Modal</th>
+                <th>Harga Jual</th>
+                <th>Stok</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="adminTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- === HISTORI (ADMIN) === -->
+    <section id="sec-histori" class="section admin-only hidden">
+      <div class="page-header">
+        <h2>Histori Transaksi</h2>
+        <button class="btn-danger-sm" onclick="hapusHistori()">
+          <i class="fa-solid fa-trash"></i> Hapus Semua
+        </button>
+      </div>
+      <div class="card">
+        <div id="historiList" class="histori-list">
+          <p class="empty-state">Belum ada histori</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- === KASIR (KASIR) === -->
+    <section id="sec-kasir" class="section kasir-only hidden">
+      <div class="page-header">
+        <h2><i class="fa-solid fa-cash-register"></i> Kasir</h2>
+      </div>
+
+      <div class="kasir-layout">
+        <!-- KIRI: Pilih Barang -->
+        <div class="kasir-left">
+          <div class="card">
+            <div class="card-header">
+              <h3>Pilih Barang</h3>
+              <div class="search-bar small">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchKasir" placeholder="Cari..." oninput="renderPilihBarang()">
+              </div>
+            </div>
+            <div id="produkGrid" class="produk-grid"></div>
+          </div>
+        </div>
+
+        <!-- KANAN: Keranjang -->
+        <div class="kasir-right">
+          <div class="card keranjang-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-cart-shopping"></i> Keranjang</h3>
+              <button class="btn-icon-danger" onclick="clearKeranjang()">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+            <div id="keranjangList" class="keranjang-list">
+              <p class="empty-state">Keranjang kosong 🛒</p>
+            </div>
+            <div class="keranjang-summary">
+              <div class="summary-row">
+                <span>Subtotal</span>
+                <span id="subtotal">Rp. 0</span>
+              </div>
+              <div class="summary-row total">
+                <span>TOTAL</span>
+                <span id="grandTotal">Rp. 0</span>
+              </div>
+              <div class="bayar-section">
+                <label>Uang Diterima</label>
+                <input type="number" id="uangDiterima" placeholder="0" oninput="hitungKembalian()">
+                <div class="kembalian-row">
+                  <span>Kembalian</span>
+                  <span id="kembalian" class="kembalian-val">Rp. 0</span>
+                </div>
+              </div>
+              <button class="btn-checkout" onclick="checkout()">
+                <i class="fa-solid fa-check-circle"></i> CHECKOUT
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- === MANAJEMEN KAS (KASIR) === -->
+    <section id="sec-manajemenKas" class="section kasir-only hidden">
+      <div class="page-header">
+        <h2>Manajemen Kas</h2>
+      </div>
+      <div class="kas-layout">
+        <div class="card">
+          <div class="card-header">
+            <h3>Saldo Kas Saat Ini</h3>
+          </div>
+          <div class="kas-balance" id="kasBalance">Rp. 0</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Jumlah</label>
+              <input id="kasInput" type="number" placeholder="Masukkan jumlah">
+            </div>
+            <div class="form-group">
+              <label>Tipe</label>
+              <select id="tipeKas">
+                <option value="masuk">💰 Kas Masuk (+)</option>
+                <option value="keluar">💸 Kas Keluar (-)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Keterangan</label>
+              <input id="keterKas" placeholder="Contoh: Modal awal">
+            </div>
+          </div>
+          <button class="btn-primary" id="btnKas">
+            <i class="fa-solid fa-paper-plane"></i> Update Kas
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-list-ul"></i> Log Kas</h3>
+          </div>
+          <div id="logKasList" class="log-kas-list">
+            <p class="empty-state">Belum ada log kas</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- NOTA MODAL -->
+<div id="notaModal" class="nota-modal hidden">
+  <div class="nota-backdrop" onclick="tutupNota()"></div>
+  <div class="nota-container">
+    <div id="notaContent" class="nota-print">
+      <!-- Nota diisi JS -->
+    </div>
+    <div class="nota-actions">
+      <button class="btn-download" onclick="downloadNota()">
+        <i class="fa-solid fa-download"></i> Download Nota (JPG)
+      </button>
+      <button class="btn-secondary" onclick="tutupNota()">
+        <i class="fa-solid fa-xmark"></i> Tutup
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast hidden"></div>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDQfd3U6ItGm29OM5cPgYfxxFG3JTEG8IY",
+  authDomain: "asa-mandiri.firebaseapp.com",
+  databaseURL: "https://asa-mandiri-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "asa-mandiri",
+  storageBucket: "asa-mandiri.firebasestorage.app",
+  messagingSenderId: "521228617478",
+  appId: "1:521228617478:web:5c588b876dc56eeed58087"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+</script>
+<script src="app.js"></script>
+</body>
+</html>
